@@ -2,5 +2,5 @@ script for sending email to large list of recipients, without making contacts in
 
 ## WARNING!
 
-this requires handling of consent outside of sendgrid,
+this requires manual handling of consent outside of sendgrid,
 as user preferences and unsubscriptions are not taken into account
