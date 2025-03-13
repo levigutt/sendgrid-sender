@@ -3,7 +3,9 @@ script for sending email to large list of recipients, without making contacts in
 ## WARNING!
 
 this requires manual handling of consent outside of sendgrid,
-as user preferences and unsubscriptions are not taken into account
+as user preferences and unsubscriptions in sendgrid are not taken into account
+
+**make sure to add a link to the email for unsubscribing**
 
 ## use
 
@@ -16,4 +18,4 @@ file `list_of_emails` must contain one email per line
 - [ ] add cli options
   - [ ] dry-run mode
   - [ ] template-id
-  - [ ] email_content (plain and html)
+  - [ ] html/plan-text
