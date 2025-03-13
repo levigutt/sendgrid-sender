@@ -19,3 +19,5 @@ the file `email_list` must contain one email per line
   - [x] dry-run mode
   - [x] template-id
   - [ ] html/plan-text
+- [ ] default from and template in config
+- [ ] parse csv or excel with dynamic data for each recipient 
