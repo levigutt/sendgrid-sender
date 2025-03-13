@@ -22,6 +22,7 @@ foreach ( $argv as $key => $arg )
         {
             print("Can only specify one file. $arg rejected\n");
             $halt = true;
+            continue;
         }
         $file_name = $arg;
         if ( !file_exists($file_name) )
@@ -36,13 +37,14 @@ foreach ( $argv as $key => $arg )
     $parts = explode('=', $arg);
     switch ( $parts[0] )
     {
-        case "--dry-run": $dry_run = true;  break;
-        case "--debug"  : $debug = true;    break;
+        case "--dry-run": $dry_run  = true; break;
+        case "--debug"  : $debug    = true; break;
         case "--from" :
             if ( 0 == strlen($parts[1]) )
             {
                 printf("Option '%s' missing value\n", $parts[0]);
                 $halt = true;
+                continue 2;
             }
             $from_email = $parts[1];
         break;
@@ -51,6 +53,7 @@ foreach ( $argv as $key => $arg )
             {
                 printf("Option '%s' missing value\n", $parts[0]);
                 $halt = true;
+                continue 2;
             }
             $template_id = $parts[1];
         break;
@@ -120,7 +123,6 @@ foreach($email_chunks as $email_chunk)
 
     if ( $debug )
     {
-        #print_r(['mail' => $mail, 'emails' => count($email_chunk), 'result' => $result]);
         print_r(['email_count' => count($email_chunk), 'result' => $result]);
     }
 }
