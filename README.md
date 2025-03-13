@@ -5,11 +5,14 @@ script for sending email to large list of recipients, without making contacts in
 this requires manual handling of consent outside of sendgrid,
 as user preferences and unsubscriptions in sendgrid are not taken into account
 
-**make sure the email specifies how to unsubscribe**
+**make sure the email contains link or instructions for unsubscribing**
 
 ## use
 
-`./sender.php [--dry-run --debug] --from=noreply@example.org --template=SG.xxx email_list`
+copy `config-sample.php` to `config.php`,
+and edit to contains API-key from sendgrid, with permissions for sending email.
+
+`./sender.php [--dry-run --debug] --from=noreply@example.org --template=d-xxxxxxxxxx email_list`
 
 the file `email_list` must contain one email per line
 
