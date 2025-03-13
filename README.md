@@ -9,13 +9,13 @@ as user preferences and unsubscriptions in sendgrid are not taken into account
 
 ## use
 
-`./sender.php list_of_emails`
+`./sender.php [--dry-run --debug] --from=noreply@example.org --template=SG.xxx email_list`
 
-file `list_of_emails` must contain one email per line
+the file `email_list` must contain one email per line
 
 ## todo
 
-- [ ] add cli options
-  - [ ] dry-run mode
-  - [ ] template-id
+- [x] add cli options
+  - [x] dry-run mode
+  - [x] template-id
   - [ ] html/plan-text
