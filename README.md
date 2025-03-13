@@ -5,7 +5,7 @@ script for sending email to large list of recipients, without making contacts in
 this requires manual handling of consent outside of sendgrid,
 as user preferences and unsubscriptions in sendgrid are not taken into account
 
-**make sure to add a link to the email for unsubscribing**
+**make sure the email specifies how to unsubscribe**
 
 ## use
 
