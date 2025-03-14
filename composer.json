@@ -1,5 +1,8 @@
 {
+    "name": "levigutt/sendgrid-sender",
+    "description": "send email via sendgrid",
+    "license": "GPL-2.0-only",
     "require":{
-        "sendgrid/sendgrid": "~8"
+        "sendgrid/sendgrid": "~8",
     }
 }
