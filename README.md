@@ -12,9 +12,9 @@ as user preferences and unsubscriptions in sendgrid are not taken into account
 copy `config-sample.php` to `config.php`,
 and edit to contains API-key from sendgrid, with permissions for sending email.
 
-`./sender.php [--dry-run --debug] --from=noreply@example.org --template=d-xxxxxxxxxx email_list`
+`./sender.php [--dry-run --from=noreply@example.org --template=d-xxxxxxxxxx] file`
 
-the file `email_list` must contain one email per line
+`file` must contain one email per line
 
 ## todo
 
@@ -22,5 +22,5 @@ the file `email_list` must contain one email per line
   - [x] dry-run mode
   - [x] template-id
   - [ ] html/plan-text
-- [ ] default from and template in config
+- [x] default from and template in config
 - [ ] parse csv or excel with dynamic data for each recipient 

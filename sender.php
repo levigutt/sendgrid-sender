@@ -6,9 +6,8 @@ require_once 'config.php';
 
 $file_name      = null;
 $dry_run        = false;
-$debug          = false;
-$template_id    = null;
-$from_email     = null;
+$template_id    = DEFAULT_TEMPLATE_ID;
+$from_email     = DEFAULT_FROM_EMAIL;
 $halt           = false;
 foreach ( $argv as $key => $arg )
 {
@@ -20,14 +19,14 @@ foreach ( $argv as $key => $arg )
     {
         if ( $file_name )
         {
-            print("Can only specify one file. $arg rejected\n");
+            errf("Can only specify one file. '%s' rejected\n", $arg);
             $halt = true;
             continue;
         }
         $file_name = $arg;
         if ( !file_exists($file_name) )
         {
-            printf("File '%s' does not exist\n", $file_name);
+            errf("File '%s' does not exist\n", $file_name);
             $halt = true;
         }
         continue;
@@ -38,11 +37,10 @@ foreach ( $argv as $key => $arg )
     switch ( $parts[0] )
     {
         case "--dry-run": $dry_run  = true; break;
-        case "--debug"  : $debug    = true; break;
         case "--from" :
             if ( 0 == strlen($parts[1]) )
             {
-                printf("Option '%s' missing value\n", $parts[0]);
+                errf("Option '%s' missing value\n", $parts[0]);
                 $halt = true;
                 continue 2;
             }
@@ -51,23 +49,32 @@ foreach ( $argv as $key => $arg )
         case "--template" :
             if ( 0 == strlen($parts[1]) )
             {
-                printf("Option '%s' missing value\n", $parts[0]);
+                errf("Option '%s' missing value\n", $parts[0]);
                 $halt = true;
                 continue 2;
             }
             $template_id = $parts[1];
         break;
         default :
-            printf("Option '%s' not recognized\n", $parts[0]);
+            errf("Option '%s' not recognized\n", $parts[0]);
             $halt = true;
+            continue 2;
         break;
     }
 }
-if ( $halt ) die;
+if ( $halt )
+    die;
 
 if ( !$file_name )
     die("No file provided\n");
 
+if ( $from_email == DEFAULT_FROM_EMAIL )
+    printf("Using default from email: %s\n", $from_email);
+
+if ( $template_id == DEFAULT_TEMPLATE_ID )
+    printf("Using default template: %s\n", $template_id);
+
+printf("Loading emails from file '%s'\n", $file_name);
 $file_content = file_get_contents($file_name);
 $file_lines = explode("\n", $file_content);
 $file_lines = array_filter($file_lines, fn($x) => filter_var($x, FILTER_SANITIZE_EMAIL));
@@ -76,22 +83,24 @@ printf("Found %d emails in %d lines\n", count($emails), count($file_lines));
 
 if ( !$dry_run )
 {
-    print "\nThis run is NOT dry!\nCtrl+C to stop\n";
-    foreach ( range(10, 1) as $num )
+    print "\nThis run is NOT dry!\nWill send in 10 seconds (ctrl+C to stop)\n";
+    print("10  ");
+    foreach ( range(9, 0) as $num )
     {
-        printf("%d\n", $num);
-        sleep(1);
+        usleep(1_000_000);
+        printf("%d  ", $num);
     }
+    print("\n");
 }
 else
 {
-    print("\nThis run is dry\n");
+    print("This run is dry\n");
     sleep(2);
 }
 
 // SendGrid accepts maximum 1000 recipients in each call
 $email_chunks = array_chunk($emails, 1000);
-foreach($email_chunks as $email_chunk)
+foreach($email_chunks as $email_num => $email_chunk)
 {
     $mail = new \SendGrid\Mail\Mail();
     $mail->setFrom($from_email);
@@ -117,12 +126,31 @@ foreach($email_chunks as $email_chunk)
         $mail->addPersonalization($personalization);
     }
 
+    printf("\nChunk %d of %d, with %d recipients\n",
+        $email_num+1, count($email_chunks), count($email_chunk));
 
     $sendgrid = new \SendGrid(SENDGRID_API_KEY);
     $result = $sendgrid->client->mail()->send()->post($mail);
+    $statusCode = $result->statusCode();
+    $body = json_decode($result->body());
 
-    if ( $debug )
+    if ( $statusCode < 200 || $statusCode > 299 )
     {
-        print_r(['email_count' => count($email_chunk), 'result' => $result]);
+        errf("SendGrid responded with error code: %d\n", $statusCode);
+        foreach( $body->errors as $errnum => $error )
+        {
+            errf("Error %d\n", $errnum);
+            foreach( $error as $key => $val )
+                errf("\t%s => %s\n", $key, $val);
+        }
+        continue;
     }
+
+    print("OK\n");
+}
+
+
+function errf(string $str, ...$args)
+{
+    return fwrite(STDERR, sprintf($str, ...$args));
 }
