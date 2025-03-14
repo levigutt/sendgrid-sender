@@ -21,6 +21,6 @@ and edit to contains API-key from sendgrid, with permissions for sending email.
 - [x] add cli options
   - [x] dry-run mode
   - [x] template-id
-  - [ ] html/plan-text
+  - [ ] html/plain-text
 - [x] default from and template in config
 - [ ] parse csv or excel with dynamic data for each recipient 
