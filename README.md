@@ -10,7 +10,7 @@ as user preferences and unsubscriptions in sendgrid are not taken into account
 ## use
 
 copy `config-sample.php` to `config.php`,
-and edit to contains API-key from sendgrid, with permissions for sending email.
+and edit to contain a SendGrid API-key with permissions for sending email.
 
 `./sender.php [--dry-run --from=noreply@example.org --template=d-xxxxxxxxxx] file`
 
