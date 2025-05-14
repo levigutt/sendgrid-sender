@@ -79,7 +79,8 @@ $file_content = file_get_contents($file_name);
 $file_lines = explode("\n", $file_content);
 $file_lines = array_filter($file_lines, fn($x) => filter_var($x, FILTER_SANITIZE_EMAIL));
 $emails = array_filter($file_lines, fn($x) => filter_var($x, FILTER_VALIDATE_EMAIL));
-printf("Found %d emails in %d lines\n", count($emails), count($file_lines));
+$emails = array_unique($emails);
+printf("Found %d unique emails in %d lines\n", count($emails), count($file_lines));
 
 if ( !$dry_run )
 {
